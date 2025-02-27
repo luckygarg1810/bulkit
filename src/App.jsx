@@ -8,6 +8,7 @@ import { Navigate } from 'react-router-dom'
 import CreateOrder from './components/CreateOrder'
 import JoinOrder from './components/JoinOrder'
 import Profile from './components/Profile'
+import Register from './components/Register'
 
 
 const AppRoutes = () => {
@@ -30,6 +31,10 @@ const AppRoutes = () => {
       <Route
         path="/profile"
         element={ <Profile/>}
+      />
+      <Route 
+      path="/register"
+      element={<Register/>}
       />
       <Route
         path="/login"

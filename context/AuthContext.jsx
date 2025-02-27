@@ -6,33 +6,47 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null);
-  const [user, setUser] = useState(null);
+  const [userId, setUserId] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate();
 
   // Load token and user info from localStorage on mount
   useEffect(() => {
     const storedToken = localStorage.getItem('token');
-    const storedUser = localStorage.getItem('user');
+    const storedUserId = localStorage.getItem('userId');
     if (storedToken) {
       setToken(storedToken);
+      setIsAuthenticated(true);
     }
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+     else{
+      setIsAuthenticated(false)
+     }
+
+     if (storedUserId) {
+      setUserId(storedUserId);
     }
   }, []);
 
   // Login function: call backend API to get JWT and user data
-  const login = async (email, password) => {
+  const login = async (username, password) => {
     try {
-      // const response = await axios.post(`http://192.168.1.100:8080/api-auth-login`)//
+      const response = await axios.post(`http://localhost:8080/api/auth/login`, {
+        username, 
+        password
+      });
+      const { token, userId } = response.data;
+      console.log(response.data)
       // Assume the backend returns { token, user } 
-      setToken(data.token);
-      setUser(data.user);
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
+      setToken(token);
+      setUserId(userId);
+      localStorage.setItem('token', token);
+      localStorage.setItem('userId', userId);
+      setIsAuthenticated(true)
+      console.log("Login successfully")
       navigate('/'); // Redirect after successful login
     } catch (error) {
       console.error('Error during login:', error);
+      setIsAuthenticated(false)
       throw error;
     }
   };
@@ -40,14 +54,15 @@ export const AuthProvider = ({ children }) => {
   // Logout function: clear stored token and user data
   const logout = () => {
     setToken(null);
-    setUser(null);
+    setUserId(null);
+    setIsAuthenticated(false);
     localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    navigate('/login');
+    localStorage.removeItem('userId');
+    navigate('/');
   };
 
   return (
-    <AuthContext.Provider value={{ token, user, login, logout }}>
+    <AuthContext.Provider value={{ token, userId, isAuthenticated, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

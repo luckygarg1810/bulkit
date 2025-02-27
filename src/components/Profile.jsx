@@ -12,7 +12,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchMyOrders = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/api/orders/myorders', {
+        const response = await axios.get('http://localhost:8080/api/orders/my', {
           headers: {
             'Content-Type': 'application/json',
             ...(token && { Authorization: `Bearer ${token}` }),
